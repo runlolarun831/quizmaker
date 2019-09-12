@@ -4,9 +4,21 @@
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <styles>
-
-    </styles>
+    <style>
+        body {
+          font-family: verdana;
+        }
+        /* <!-- input, button{
+          height: 2rem;
+        } -->
+        <!-- .error {
+          color: red;
+        }
+        .form {
+          display: flex;
+          flex-direction: column;
+        } --> */
+    </style>
   </head>
   <body>
     <div id='root'></div>
@@ -15,8 +27,39 @@
     const {Component} = React;
     const root = document.querySelector('#root');
 
+    //sets state
+    class App extends Component{
+      constructor(){
+        super();
+        this.state = {
+          quiz: [],
+          question: '',
+          answer: ''
+        };
+      }
+      //get data from axios call to quiz.json
+      async componentDidMount(){
+        this.setState({ quiz : ( await axios.get('/api/quiz')).data});
+        console.log(this.state.quiz);
+      }
 
-    render(<hr />, root);
+      render(){
+        const { quiz, question, answer } = this.state;
+        return (
+          <div className='form'>
+            <h1>QuizMaker: Input Questions and Answers</h1>
+            <ul>
+                {
+                  quiz.map( item => <li key={ item.id }><div>Question: {item.question }</div><div>Answer: {item.answer }</div></li>)
+                }
+            </ul>
+          </div>
+        );
+      }
+    }
+
+    render(<App/>, root);
+    //ReactDOM.render(<hr/>, root);
     </script>
   </body>
 </html>
